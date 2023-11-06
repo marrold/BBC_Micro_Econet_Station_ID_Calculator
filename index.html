@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBC Micro Econet Station ID Jumper Calculator</title>
+    <style>
+        /* Center table content */
+        #outputTable th, #outputTable td {
+            text-align: center;
+            padding: 5px 15px;
+        }
+    </style>
+</head>
+<body>
+    <h2>BBC Micro Econet Station ID Jumper Calculator</h2>
+    <p>Enter a Station ID between 1 - 254 then hit GO to calculate the required jumpers<p/>
+    <input type="number" id="stationId" min="1" max="254">
+    <button onclick="showConfiguration()">GO</button>
+
+    <h3>Jumper Configuration:</h3>
+    <table border="1" id="outputTable">
+        <thead>
+            <tr>
+                <th>Jumper Number</th>
+                <th>Fitted</th>
+            </tr>
+        </thead>
+        <tbody id="output"></tbody>
+    </table>
+
+    <script>
+        function stationIdToBinary(stationId) {
+            // Convert to binary and pad with zeros, then reverse the string
+            return (stationId >>> 0).toString(2).padStart(8, '0').split('').reverse().join('');
+        }
+
+        function binaryToJumperConfiguration(binaryStr) {
+            let tableRows = '';
+            for (let i = 0; i < binaryStr.length; i++) {
+                const jumperStatus = binaryStr[i] === '0' ? 'X' : '';
+                tableRows += `<tr><td>${i}</td><td>${jumperStatus}</td></tr>`;
+            }
+            return tableRows;
+        }
+
+        function showConfiguration() {
+            const stationId = parseInt(document.getElementById('stationId').value, 10);
+            if (stationId < 1 || stationId > 254) {
+                alert('Please enter a valid Station ID between 1 and 254.');
+                return;
+            }
+
+            const binaryStr = stationIdToBinary(stationId);
+            const jumperConfigTableRows = binaryToJumperConfiguration(binaryStr);
+
+            document.getElementById('output').innerHTML = jumperConfigTableRows;
+        }
+    </script>
+    <footer style="margin-top: 20px;">
+        <p><a href="https://github.com/marrold/BBC_Micro_Econet_Station_ID_Calculator" target="_blank">GitHub Repository</a>.</p>
+    </footer>
+
+</body>
+</html>
+
